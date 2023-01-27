@@ -2,7 +2,7 @@
   "name": "movie_api",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "body-parser": "^1.20.1",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "morgan": "^1.10.0"
   }
 }
