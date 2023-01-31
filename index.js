@@ -137,6 +137,7 @@ app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { sess
     Users.findOneAndUpdate({ Username: Username }, {
         $push: { FavoriteMovies: MovieID }
     }, { new: true })
+        .populate('FavoriteMovies', 'Title')
         .then((updatedUser) => res.status(201).json(updatedUser))
         .catch((err) => {
             console.log(err);
@@ -150,6 +151,7 @@ app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { se
     Users.findOneAndUpdate({ Username: Username }, {
         $pull: { FavoriteMovies: MovieID }
     }, { new: true })
+        .populate('FavoriteMovies', 'Title')
         .then((updatedUser) => res.status(201).json(updatedUser))
         .catch((err) => {
             console.log(err);
