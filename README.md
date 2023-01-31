@@ -18,6 +18,10 @@ See [Documentation](#) for how to use myFlix API.
 * mongoose
 * morgan
 * uuid
+* passport
+* passport-local
+* passport-jwt
+* jsonwebtoken
 
 ## Dev Dependencies
 * eslint

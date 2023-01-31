@@ -38,6 +38,15 @@
 
         <tbody>
             <tr>
+                <td>Allow registerd users to login</td>
+                <td>/login</td>
+                <td>POST</td>
+                <td>--</td>
+                <td>--</td>
+                <td>A JSON object holding data about the logged in user</td>
+            </tr>
+
+            <tr>
                 <td>Return a list of ALL movies to the user</td>
                 <td>/movies</td>
                 <td>GET</td>
@@ -80,7 +89,7 @@
                 <td>/users</td>
                 <td>POST</td>
                 <td>--</td>
-                <td>--</td>
+                <td>A JSON object holding data about the user to add</td>
                 <td>A JSON object holding data about the user to add, structured like:
                     { "Username" : "John Smith",
                     "password" : "John123",
@@ -95,7 +104,7 @@
                 <td>/users/:Username</td>
                 <td>PUT</td>
                 <td>:Username</td>
-                <td>--</td>
+                <td>A JSON object holding data about the user</td>
                 <td>An updated JSON object holding data about the user</td>
             </tr>
 
