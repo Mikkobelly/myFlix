@@ -21,7 +21,7 @@ const Users = Models.User;
 // }).then(() => console.log('MongoDB connected'))
 //     .catch(err => console.error(err));
 
-mongoose.connect('process.env.CONNECTION_URI', {
+mongoose.connect(process.env.CONNECTION_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => console.log('MongoDB connected'))
