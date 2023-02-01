@@ -6,6 +6,7 @@ const express = require('express'),
     uuid = require('uuid'),
     mongoose = require('mongoose'),
     Models = require('./models.js');
+const { check, validationResult } = require('express-validator');
 
 const Movies = Models.Movie;
 const Users = Models.User;
@@ -34,6 +35,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+//These lines have to be right before "let auth = require(./auth)(app);"
+const cors = require('cors');
+let allowedOrigins = ['http://localhost:8080', 'http://testsite.com'];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            let message = `The CORS policy for this application doesn't allow access from origin ${origin}`;
+            return callback(new Error(message), false);
+        }
+        return callback(null, true);
+    }
+}));
+
+
+
 //These lines have to be after bodyParser middeleware function!
 let auth = require('./auth')(app);
 const passport = require('passport');
@@ -45,7 +63,7 @@ require('./passport');
 //Homepage route
 app.get('/', (req, res) => {
     res.send('Welcome to myFlix App!');
-})
+});
 
 //Return a list of ALL movies
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -88,48 +106,79 @@ app.get('/movies/director/:DirectorName', passport.authenticate('jwt', { session
 });
 
 //Register a user
-app.post('/users', (req, res) => {
-    const { Username, Password, Email, Birthday } = req.body;
-    Users.findOne({ Username: Username })
-        .then((user) => {
-            if (user) {
-                res.status(400).send(`${Username} already exsits.`);
-            } else {
-                Users.create({
-                    Username: Username,
-                    Password: Password,
-                    Email: Email,
-                    Birthday: Birthday
-                }).then((createdUser) => res.status(201).json(createdUser))
-                    .catch((err) => {
-                        console.log(err);
-                        res.status(500).send(`Error: ${err}`);
-                    });
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send(`Error: ${err}`);
-        });
-});
+app.post('/users',
+    [
+        check('Username', 'Username is required').length({ min: 5 }),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required').not().isEmpty(),
+        check('Email', 'Email does not appear to be valid').isEmail()
+    ], (req, res) => {
+
+        //check the validation object for errors
+        let errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
+        }
+
+        let hashedPassword = Users.hashPassword(req.body.Password);
+        const { Username, Email, Birthday } = req.body;
+
+        Users.findOne({ Username: Username })
+            .then((user) => {
+                if (user) {
+                    res.status(400).send(`${Username} already exsits.`);
+                } else {
+                    Users.create({
+                        Username: Username,
+                        Password: hashedPassword,
+                        Email: Email,
+                        Birthday: Birthday
+                    }).then((createdUser) => res.status(201).json(createdUser))
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(500).send(`Error: ${err}`);
+                        });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send(`Error: ${err}`);
+            });
+    });
 
 //Update the user's information
-app.put('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
-    const { Username, Password, Email, Birthday } = req.body;
-    Users.findOneAndUpdate({ Username: req.params.Username }, {
-        $set: {
-            Username: Username,
-            Password: Password,
-            Email: Email,
-            Birthday: Birthday
+app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
+    [
+        check('Username', 'Username is required').length({ min: 5 }),
+        check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+        check('Password', 'Password is required').not().isEmpty(),
+        check('Email', 'Email does not appear to be valid').isEmail()
+    ], (req, res) => {
+
+        let errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ errors: errors.array() });
         }
-    }, { new: true })
-        .then((updatedUser) => res.status(201).json(updatedUser))
-        .catch((err) => {
-            console.log(err);
-            res.status(500).send(`Error: ${err}`);
-        });
-});
+
+        let hashedPassword = Users.hashPassword(req.body.Password);
+        const { Username, Email, Birthday } = req.body;
+
+        Users.findOneAndUpdate({ Username: req.params.Username }, {
+            $set: {
+                Username: Username,
+                Password: hashedPassword,
+                Email: Email,
+                Birthday: Birthday
+            }
+        }, { new: true })
+            .then((updatedUser) => res.status(201).json(updatedUser))
+            .catch((err) => {
+                console.log(err);
+                res.status(500).send(`Error: ${err}`);
+            });
+    });
 
 //Add user's favorite movie
 app.post('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -157,7 +206,7 @@ app.delete('/users/:Username/movies/:MovieID', passport.authenticate('jwt', { se
             console.log(err);
             res.status(500).send(`Error: ${err}`);
         });
-})
+});
 
 //Deregister the user
 app.delete('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
@@ -182,9 +231,9 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
-})
+});
 
-
-app.listen(8080, () => {
-    console.log('Listening on port 8080');
+const port = process.env.PORT || 8080;
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Listening on port ${port}`);
 });
