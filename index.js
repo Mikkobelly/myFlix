@@ -14,7 +14,14 @@ const Users = Models.User;
 
 //Connect to database
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://127.0.0.1:27017/cfDB', {
+
+// mongoose.connect('mongodb://127.0.0.1:27017/cfDB', {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// }).then(() => console.log('MongoDB connected'))
+//     .catch(err => console.error(err));
+
+mongoose.connect('process.env.CONNECTION_URI', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 }).then(() => console.log('MongoDB connected'))
