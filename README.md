@@ -22,6 +22,9 @@ See [Documentation](#) for how to use myFlix API.
 * passport-local
 * passport-jwt
 * jsonwebtoken
+* cors
+* express-validator
+* bcrypt
 
 ## Dev Dependencies
 * eslint
