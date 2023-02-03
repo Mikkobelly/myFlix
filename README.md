@@ -1,4 +1,4 @@
-# myFlix Application
+# myFlix Application (server-side)
 
 ## Overview
 
