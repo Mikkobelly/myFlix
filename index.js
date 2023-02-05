@@ -54,7 +54,7 @@ require('./passport');
 
 
 //Homepage route
-app.get('/', (req, res) => {
+app.get('/', passport.authenticate('jwt', { session: false }), (req, res) => {
     res.send('Welcome to myFlix App!');
 });
 
