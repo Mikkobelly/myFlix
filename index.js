@@ -140,6 +140,16 @@ app.post('/users',
             });
     });
 
+//Get user
+app.get('/users/:Username', passport.authenticate('jwt', { session: false }), (req, res) => {
+    Users.findOne({ Username: req.params.Username })
+        .then((user) => res.status(201).json(user))
+        .catch((err) => {
+            console.log(err);
+            res.status(500).send(`Error: ${err}`);
+        });
+})
+
 //Update the user's information
 app.put('/users/:Username', passport.authenticate('jwt', { session: false }),
     [
