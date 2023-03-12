@@ -28,4 +28,3 @@ See [Documentation](https://myflix-by-mikkobelly.herokuapp.com/documentation.htm
 
 ## Dev Dependencies
 * eslint
-* 
