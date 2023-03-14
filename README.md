@@ -2,11 +2,25 @@
 
 ## Overview
 
-[myFlix](https://myflix-by-mikkobelly.herokuapp.com/#)
+Live site: [myFlix](https://myflix-by-mikkobelly.herokuapp.com/#)
 
 myFlix will provide users with access to information about different
 movies, directors, and genres. Users will be able to sign up, update their
-personal information, and create a list of their favorite movies. 
+personal information, and create a list of their favorite movies.
+
+## Key features
+
+- GET all movies
+- GET a single movie by title
+- GET genre data by genre name
+- GET director data by director name
+- POST new user upon registration if a matching user is not found
+- POST user: authenticate user and genarate JWT upon login
+- GET current user by username
+- PUT user data (update current user data)
+- POST movie to user's list of favorites
+- DELETE movie from user's list of favorites
+- DELETE user permanently (deregister current user)
 
 ## Documentation 
 
@@ -14,7 +28,7 @@ For how to use myFlix API:
 [Documentation](https://myflix-by-mikkobelly.herokuapp.com/documentation.html#)
 
 ## Technologies
-MERN(MongoDB, Express, React, Node.js)
+MERN (MongoDB, Express, React, Node.js)
 
 ## Dependencies 
 
