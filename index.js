@@ -62,7 +62,7 @@ app.get('/', (req, res) => {
 });
 
 /**
-* Get all movies
+* GET all movies
 * @name getMovies
 * @kind function
 * @requires passport
